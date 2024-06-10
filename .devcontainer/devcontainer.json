@@ -1,0 +1,32 @@
+{
+  "dockerComposeFile": "compose.yml",
+  "workspaceFolder": "/app",
+  "service": "app",
+  "containerUser": "vscode",
+  "features": {
+    "ghcr.io/cirolosapio/devcontainers-features/alpine-user": {},
+    "ghcr.io/cirolosapio/devcontainers-features/alpine-starship": {},
+    "ghcr.io/cirolosapio/devcontainers-features/alpine-ohmyzsh": {},
+    "ghcr.io/cirolosapio/devcontainers-features/alpine-docker": {},
+    "ghcr.io/cirolosapio/devcontainers-features/alpine-deno": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "BriteSnow.vscode-toggle-quotes",
+        "ChakrounAnas.turbo-console-log",
+        "eamodio.gitlens",
+        "mikestead.dotenv",
+        "oderwat.indent-rainbow",
+        "oliversturm.fix-json",
+        "Orta.vscode-twoslash-queries",
+        "pflannery.vscode-versionlens",
+        "usernamehw.errorlens",
+        "yoavbls.pretty-ts-errors",
+        "Cardinal90.multi-cursor-case-preserve",
+        "GitHub.copilot",
+        "denoland.vscode-deno"
+      ]
+    }
+  }
+}

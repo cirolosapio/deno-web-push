@@ -1,0 +1,10 @@
+name: deno-web-push_devcontainer
+
+services:
+  app:
+    # image: denoland/deno:alpine
+    image: alpine
+    command: top
+    volumes:
+      - ..:/app:cached
+      - ~/.zsh_history:/home/vscode/.zsh_history:rw
