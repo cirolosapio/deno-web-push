@@ -42,13 +42,16 @@ router
   })
   .post('/send/:user', async (ctx) => {
     const { user } = ctx.params
+    const { delay } = await ctx.request.body.json()
     const key = ['users', user, 'subscription']
     const subscription = await kv.get(key)
     console.log({ user, subscription })
-    await webPush.sendNotification(subscription, JSON.stringify({
-      title: 'Hello from Deno!',
-      body: 'This is a push notification from Deno!',
-    }))
+    setTimeout(() => {
+      webPush.sendNotification(subscription, JSON.stringify({
+        title: 'Hello from Deno!',
+        body: 'This is a push notification from Deno!',
+      }))
+    }, (delay ?? 0) * 1000)
     ctx.response.body = { user, subscription }
   })
 
