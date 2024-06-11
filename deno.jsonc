@@ -1,11 +1,14 @@
 {
-  "tasks": {
-    "dev": "deno run --watch main.ts"
-  },
-  "fmt": {
-    "lineWidth": 900,
-    "semiColons": false,
-    "singleQuote": true,
-    "useTabs": true
-  }
+	"tasks": {
+		"dev": "deno run --watch main.ts"
+	},
+	"fmt": {
+		"lineWidth": 900,
+		"semiColons": false,
+		"singleQuote": true,
+		"useTabs": true
+	},
+	"imports": {
+		"@oak/oak": "jsr:@oak/oak@^16.1.0"
+	}
 }
