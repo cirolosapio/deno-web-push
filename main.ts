@@ -54,9 +54,12 @@ router
     }, (delay ?? 0) * 1000)
     ctx.response.body = { user, subscription }
   })
+  .get('/', (ctx) => {
+    ctx.response.body = 'Hello from Deno!'
+  })
 
 const app = new Application();
-app.use(oakCors({ origin: true, }))
+app.use(oakCors({ origin: true }))
 app.use(router.routes());
 app.use(router.allowedMethods())
 
