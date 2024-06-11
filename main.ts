@@ -47,10 +47,12 @@ router
     const subscription = (await kv.get(key)).value
     console.log({ user, subscription })
     setTimeout(() => {
-      webPush.sendNotification(JSON.stringify(subscription), JSON.stringify({
-        title: 'Hello from Deno!',
-        body: 'This is a push notification from Deno!',
-      }))
+      console.log('sending')
+      webPush.sendNotification(subscription)
+      // webPush.sendNotification(subscription, JSON.stringify({
+      //   title: 'Hello from Deno!',
+      //   body: 'This is a push notification from Deno!',
+      // }))
     }, (delay ?? 0) * 1000)
     ctx.response.body = { user, subscription }
   })
