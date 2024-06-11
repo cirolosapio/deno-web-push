@@ -44,10 +44,10 @@ router
     const { user } = ctx.params
     const { delay } = await ctx.request.body.json()
     const key = ['users', user, 'subscription']
-    const subscription = await kv.get(key)
+    const subscription = (await kv.get(key)).value
     console.log({ user, subscription })
     setTimeout(() => {
-      webPush.sendNotification(subscription.value, JSON.stringify({
+      webPush.sendNotification(JSON.stringify(subscription), JSON.stringify({
         title: 'Hello from Deno!',
         body: 'This is a push notification from Deno!',
       }))
