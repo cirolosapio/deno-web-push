@@ -59,7 +59,7 @@ router
   })
 
 const app = new Application();
-app.use(oakCors({ origin: '*' }))
+app.use(oakCors({ origin: /cirolosapio\.it$/ }))
 app.use(router.routes());
 app.use(router.allowedMethods())
 
