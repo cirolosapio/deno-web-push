@@ -4,7 +4,9 @@ import { oakCors } from "https://deno.land/x/cors@v1.2.2/mod.ts"
 
 // const keys = webPush.generateVAPIDKeys()
 const publicKey = Deno.env.get('VAPID_PUBLIC_KEY')
+console.log('--- ~ publicKey:', publicKey)
 const privateKey = Deno.env.get('VAPID_PRIVATE_KEY')
+console.log('--- ~ privateKey:', privateKey)
 
 webPush.setVapidDetails(
   'mailto:info@cirolosapio.it',
