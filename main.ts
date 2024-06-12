@@ -36,8 +36,8 @@ router
     const { delay, requireInteraction, title, body, withPayload, urgency } = await ctx.request.body.json()
     const key = ['users', user, 'subscription']
     const subscription = (await kv.get<webPush.PushSubscription>(key)).value
-    // const payload = withPayload ? JSON.stringify({ title, body }) : undefined
-    console.log({ user, requireInteraction, title, body, delay })
+    const payload = withPayload ? JSON.stringify({ title, body }) : undefined
+    console.log({ user, requireInteraction, title, body, delay, payload })
     await new Promise((resolve, reject) => {
       setTimeout(async () => {
         try {
@@ -48,7 +48,7 @@ router
           console.log('endpoint', subscription?.endpoint)
           console.log('keys', subscription?.keys)
 
-          const res = await webPush.sendNotification(subscription!, JSON.stringify({ title: 'test titolo', body: 'test body' }), {
+          const res = await webPush.sendNotification(subscription!, payload, {
             urgency,
             vapidDetails: {
               subject: 'mailto:info@cirolosapio.it',
