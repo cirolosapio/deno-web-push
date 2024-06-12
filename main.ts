@@ -43,10 +43,10 @@ router
   })
   .post('/send/:user', async (ctx) => {
     const { user } = ctx.params
-    const { delay, requireInteraction, title, body } = await ctx.request.body.json()
+    const { delay, requireInteraction, title, body, withPayload } = await ctx.request.body.json()
     const key = ['users', user, 'subscription']
     const subscription = (await kv.get<webPush.PushSubscription>(key)).value
-    const payload = JSON.stringify({ title, body, requireInteraction })
+    const payload = withPayload ? JSON.stringify({ title, body, requireInteraction }) : undefined
     console.log({ user, requireInteraction, title, body, delay, payload, subscription })
     setTimeout(async () => {
       try {
