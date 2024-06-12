@@ -46,11 +46,11 @@ router
     const { delay, requireInteraction, title, body } = await ctx.request.body.json()
     const key = ['users', user, 'subscription']
     const subscription = (await kv.get<webPush.PushSubscription>(key)).value
-    console.log({ user, subscription })
+    console.log({ user, requireInteraction, title, body, delay, subscription })
     setTimeout(async () => {
       console.log('sending')
       await webPush.sendNotification(subscription!, JSON.stringify({ title, body, requireInteraction }))
-      console.log('sended')
+      console.log('sent')
     }, (delay ?? 0) * 1000)
     ctx.response.body = { user, subscription }
   })
