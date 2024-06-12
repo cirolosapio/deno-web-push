@@ -48,23 +48,24 @@ router
     const subscription = (await kv.get<webPush.PushSubscription>(key)).value
     const payload = withPayload ? JSON.stringify({ title, body }) : undefined
     console.log({ user, requireInteraction, title, body, delay, payload, subscription })
-    await new Promise(resolve => {
-      setTimeout(async () => {
-        try {
-          console.log('sending')
-          const res = await webPush.sendNotification(subscription!, payload)
-          console.log('sent', res)
-        } catch (error) {
-          if (error instanceof webPush.WebPushError) {
-            console.log('WebPushError', error.statusCode, error.body, error.message)
-          } else {
-            console.log('Error', error)
-          }
-          resolve(true)
-          throw error
-        }
-      }, (delay ?? 0) * 1000)
-    })
+    // await new Promise(resolve => {
+    //   setTimeout(async () => {
+    try {
+      console.log('sending')
+      const res = await webPush.sendNotification(subscription!, payload)
+      console.log('sent', res)
+    } catch (error) {
+      if (error instanceof webPush.WebPushError) {
+        console.log('WebPushError', error.statusCode, error.body, error.message)
+      } else {
+        console.log('Error', error)
+      }
+      // resolve(true)
+      ctx.response.body = { error }
+      throw error
+    }
+    //   }, (delay ?? 0) * 1000)
+    // })
     ctx.response.body = { user, title, body, delay }
   })
   .get('/', (ctx) => {
