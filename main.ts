@@ -52,8 +52,8 @@ router
       setTimeout(async () => {
         try {
           console.log('sending')
-          await webPush.sendNotification(subscription!, payload)
-          console.log('sent')
+          const res = await webPush.sendNotification(subscription!, payload)
+          console.log('sent', res)
         } catch (error) {
           if (error instanceof webPush.WebPushError) {
             console.log('WebPushError', error.statusCode, error.body, error.message)
