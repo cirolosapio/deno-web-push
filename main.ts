@@ -2,6 +2,7 @@
 import webPush from 'npm:web-push'
 import { Application, Router } from "@oak/oak";
 import { oakCors } from "https://deno.land/x/cors@v1.2.2/mod.ts"
+import { WebPushError } from 'npm:@types/web-push'
 
 // const keys = webPush.generateVAPIDKeys()
 const publicKey = Deno.env.get('VAPID_PUBLIC_KEY')
@@ -48,9 +49,18 @@ router
     const subscription = (await kv.get<webPush.PushSubscription>(key)).value
     console.log({ user, requireInteraction, title, body, delay, subscription })
     setTimeout(async () => {
-      console.log('sending')
-      await webPush.sendNotification(subscription!, JSON.stringify({ title, body, requireInteraction }))
-      console.log('sent')
+      try {
+        console.log('sending')
+        await webPush.sendNotification(subscription!, JSON.stringify({ title, body, requireInteraction }))
+        console.log('sent')
+      } catch (error) {
+        // check if is WebPushError
+        if (error instanceof WebPushError) {
+          console.log('WebPushError', error.statusCode, error.body, error.message)
+        } else {
+          console.log('Error', error)
+        }
+      }
     }, (delay ?? 0) * 1000)
     ctx.response.body = { user, title, body, delay }
   })
