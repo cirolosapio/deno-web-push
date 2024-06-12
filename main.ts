@@ -33,12 +33,11 @@ router
   })
   .post('/send/:user', async (ctx) => {
     const { user } = ctx.params
-    const { delay, requireInteraction, title, body, withPayload } = await ctx.request.body.json()
+    const { delay, requireInteraction, title, body, withPayload, urgency } = await ctx.request.body.json()
     const key = ['users', user, 'subscription']
-    // @ts-expect-error exists
-    const { expirationTime, ...subscription } = (await kv.get<webPush.PushSubscription>(key)).value
+    const subscription = (await kv.get<webPush.PushSubscription>(key)).value
     const payload = withPayload ? JSON.stringify({ title, body }) : undefined
-    console.log({ user, requireInteraction, title, body, delay, payload, subscription, expirationTime })
+    console.log({ user, requireInteraction, title, body, delay, payload, subscription })
     await new Promise((resolve, reject) => {
       setTimeout(async () => {
         try {
@@ -48,6 +47,7 @@ router
           console.log('VAPID_PRIVATE_KEY', Deno.env.get('VAPID_PRIVATE_KEY'))
 
           const res = await webPush.sendNotification(subscription!, payload, {
+            urgency,
             vapidDetails: {
               subject: 'mailto:info@cirolosapio.it',
               publicKey: Deno.env.get('VAPID_PUBLIC_KEY')!,
