@@ -2,6 +2,7 @@
 import webPush from 'npm:web-push'
 import { Application, Router } from "@oak/oak";
 import { oakCors } from "https://deno.land/x/cors@v1.2.2/mod.ts"
+import logger from "https://deno.land/x/oak_logger/mod.ts";
 
 // const keys = webPush.generateVAPIDKeys()
 const publicKey = Deno.env.get('VAPID_PUBLIC_KEY')
@@ -76,6 +77,8 @@ const app = new Application();
 app.use(oakCors({ origin: /cirolosapio\.it$/, credentials: true }))
 app.use(router.routes());
 app.use(router.allowedMethods())
+app.use(logger.logger)
+app.use(logger.responseTime)
 
 await app.listen({ port: 3000 });
 
