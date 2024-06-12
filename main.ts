@@ -3,16 +3,6 @@ import webPush from 'npm:web-push'
 import { Application, Router } from "@oak/oak";
 import { oakCors } from "https://deno.land/x/cors@v1.2.2/mod.ts"
 
-// const keys = webPush.generateVAPIDKeys()
-const publicKey = Deno.env.get('VAPID_PUBLIC_KEY')
-const privateKey = Deno.env.get('VAPID_PRIVATE_KEY')
-
-webPush.setVapidDetails(
-  'mailto:info@cirolosapio.it',
-  publicKey,
-  privateKey,
-)
-
 const kv = await Deno.openKv()
 
 const router = new Router();
@@ -53,7 +43,17 @@ router
       setTimeout(async () => {
         try {
           console.log('sending')
-          const res = await webPush.sendNotification(subscription!, payload)
+
+          console.log('VAPID_PUBLIC_KEY', Deno.env.get('VAPID_PUBLIC_KEY'))
+          console.log('VAPID_PRIVATE_KEY', Deno.env.get('VAPID_PRIVATE_KEY'))
+
+          const res = await webPush.sendNotification(subscription!, payload, {
+            vapidDetails: {
+              subject: 'mailto:info@cirolosapio.it',
+              publicKey: Deno.env.get('VAPID_PUBLIC_KEY')!,
+              privateKey: Deno.env.get('VAPID_PRIVATE_KEY')!,
+            }
+          })
           console.log('sent', res)
           resolve(true)
         } catch (error) {
