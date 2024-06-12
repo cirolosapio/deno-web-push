@@ -36,8 +36,8 @@ router
     const { delay, requireInteraction, title, body, withPayload, urgency } = await ctx.request.body.json()
     const key = ['users', user, 'subscription']
     const subscription = (await kv.get<webPush.PushSubscription>(key)).value
-    const payload = withPayload ? JSON.stringify({ title, body }) : undefined
-    console.log({ user, requireInteraction, title, body, delay, payload, subscription })
+    // const payload = withPayload ? JSON.stringify({ title, body }) : undefined
+    console.log({ user, requireInteraction, title, body, delay, subscription })
     await new Promise((resolve, reject) => {
       setTimeout(async () => {
         try {
@@ -46,7 +46,7 @@ router
           console.log('VAPID_PUBLIC_KEY', Deno.env.get('VAPID_PUBLIC_KEY'))
           console.log('VAPID_PRIVATE_KEY', Deno.env.get('VAPID_PRIVATE_KEY'))
 
-          const res = await webPush.sendNotification(subscription!, payload, {
+          const res = await webPush.sendNotification(subscription!, JSON.stringify({ title: 'test titolo', body: 'test body' }), {
             urgency,
             vapidDetails: {
               subject: 'mailto:info@cirolosapio.it',
