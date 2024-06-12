@@ -49,7 +49,7 @@ router
     console.log({ user, subscription })
     setTimeout(() => {
       console.log('sending')
-      webPush.sendNotification(subscription!, { title, body, requireInteraction })
+      webPush.sendNotification(subscription!, JSON.stringify({ title, body, requireInteraction }))
       // webPush.sendNotification(subscription, JSON.stringify({
       //   title: 'Hello from Deno!',
       //   body: 'This is a push notification from Deno!',
