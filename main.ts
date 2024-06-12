@@ -43,19 +43,23 @@ router
         try {
           console.log('sending')
 
-          console.log('VAPID_PUBLIC_KEY', Deno.env.get('VAPID_PUBLIC_KEY'))
-          console.log('VAPID_PRIVATE_KEY', Deno.env.get('VAPID_PRIVATE_KEY'))
           console.log('endpoint', subscription?.endpoint)
           console.log('keys', subscription?.keys)
 
-          const res = await webPush.sendNotification(subscription!, payload, {
+          const options: webPush.RequestOptions = {
             urgency,
             vapidDetails: {
               subject: 'mailto:info@cirolosapio.it',
               publicKey: Deno.env.get('VAPID_PUBLIC_KEY')!,
               privateKey: Deno.env.get('VAPID_PRIVATE_KEY')!,
             }
-          })
+          }
+          console.log('--- ~ setTimeout ~ options:', options)
+
+          const requestDetails = webPush.generateRequestDetails(subscription!, payload, options)
+          console.log('--- ~ setTimeout ~ requestDetails:', requestDetails)
+
+          const res = await webPush.sendNotification(subscription!, payload, options)
           console.log('sent', res)
           resolve(true)
         } catch (error) {
