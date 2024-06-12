@@ -37,7 +37,7 @@ router
     const key = ['users', user, 'subscription']
     const subscription = (await kv.get<webPush.PushSubscription>(key)).value
     // const payload = withPayload ? JSON.stringify({ title, body }) : undefined
-    console.log({ user, requireInteraction, title, body, delay, subscription })
+    console.log({ user, requireInteraction, title, body, delay })
     await new Promise((resolve, reject) => {
       setTimeout(async () => {
         try {
@@ -45,6 +45,8 @@ router
 
           console.log('VAPID_PUBLIC_KEY', Deno.env.get('VAPID_PUBLIC_KEY'))
           console.log('VAPID_PRIVATE_KEY', Deno.env.get('VAPID_PRIVATE_KEY'))
+          console.log('endpoint', subscription?.endpoint)
+          console.log('keys', subscription?.keys)
 
           const res = await webPush.sendNotification(subscription!, JSON.stringify({ title: 'test titolo', body: 'test body' }), {
             urgency,
