@@ -52,7 +52,7 @@ router
       await webPush.sendNotification(subscription!, JSON.stringify({ title, body, requireInteraction }))
       console.log('sent')
     }, (delay ?? 0) * 1000)
-    ctx.response.body = { user, subscription }
+    ctx.response.body = { user, title, body, delay }
   })
   .get('/', (ctx) => {
     ctx.response.body = 'Hello from Deno!'
