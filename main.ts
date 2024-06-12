@@ -50,7 +50,8 @@ router
     setTimeout(async () => {
       try {
         console.log('sending')
-        await webPush.sendNotification(subscription!, JSON.stringify({ title, body, requireInteraction }))
+        // await webPush.sendNotification(subscription!, JSON.stringify({ title, body, requireInteraction }))
+        await webPush.sendNotification(subscription!)
         console.log('sent')
       } catch (error) {
         // check if is WebPushError
