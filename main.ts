@@ -45,9 +45,10 @@ router
     const { user } = ctx.params
     const { delay, requireInteraction, title, body, withPayload } = await ctx.request.body.json()
     const key = ['users', user, 'subscription']
-    const subscription = (await kv.get<webPush.PushSubscription>(key)).value
+    // @ts-expect-error exists
+    const { expirationTime, ...subscription } = (await kv.get<webPush.PushSubscription>(key)).value
     const payload = withPayload ? JSON.stringify({ title, body }) : undefined
-    console.log({ user, requireInteraction, title, body, delay, payload, subscription })
+    console.log({ user, requireInteraction, title, body, delay, payload, subscription, expirationTime })
     await new Promise((resolve, reject) => {
       setTimeout(async () => {
         try {
@@ -57,7 +58,7 @@ router
           resolve(true)
         } catch (error) {
           if (error instanceof webPush.WebPushError) {
-            console.log('WebPushError', error.statusCode, error.body, error.message)
+            console.log('WebPushError', error.statusCode, error.body, error.message, error.cause)
           } else {
             console.log('Error', error)
           }
