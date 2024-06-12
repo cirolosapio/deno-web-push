@@ -2,7 +2,6 @@
 import webPush from 'npm:web-push'
 import { Application, Router } from "@oak/oak";
 import { oakCors } from "https://deno.land/x/cors@v1.2.2/mod.ts"
-import logger from "https://deno.land/x/oak_logger/mod.ts";
 
 // const keys = webPush.generateVAPIDKeys()
 const publicKey = Deno.env.get('VAPID_PUBLIC_KEY')
@@ -49,27 +48,27 @@ router
     const subscription = (await kv.get<webPush.PushSubscription>(key)).value
     const payload = withPayload ? JSON.stringify({ title, body }) : undefined
     console.log({ user, requireInteraction, title, body, delay, payload, subscription })
-    // await new Promise(resolve => {
-    //   setTimeout(async () => {
-    try {
-      console.log('sending')
-      const res = await webPush.sendNotification(subscription!, payload)
-      console.log('sent', res)
-    } catch (error) {
-      if (error instanceof webPush.WebPushError) {
-        console.log('WebPushError', error.statusCode, error.body, error.message)
-      } else {
-        console.log('Error', error)
-      }
-      // resolve(true)
-      ctx.response.body = { error }
-      throw error
-    }
-    //   }, (delay ?? 0) * 1000)
-    // })
+    await new Promise((resolve, reject) => {
+      setTimeout(async () => {
+        try {
+          console.log('sending')
+          const res = await webPush.sendNotification(subscription!, payload)
+          console.log('sent', res)
+          resolve(true)
+        } catch (error) {
+          if (error instanceof webPush.WebPushError) {
+            console.log('WebPushError', error.statusCode, error.body, error.message)
+          } else {
+            console.log('Error', error)
+          }
+          ctx.response.body = { error }
+          reject(error)
+        }
+      }, (delay ?? 0) * 1000)
+    })
     ctx.response.body = { user, title, body, delay }
   })
-  .get('/', (ctx) => {
+  .get('/', ctx => {
     ctx.response.body = 'Hello from Deno!'
   })
 
@@ -77,8 +76,6 @@ const app = new Application();
 app.use(oakCors({ origin: /cirolosapio\.it$/, credentials: true }))
 app.use(router.routes());
 app.use(router.allowedMethods())
-app.use(logger.logger)
-app.use(logger.responseTime)
 
 await app.listen({ port: 3000 });
 
