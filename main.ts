@@ -46,7 +46,7 @@ router
     const { delay, requireInteraction, title, body, withPayload } = await ctx.request.body.json()
     const key = ['users', user, 'subscription']
     const subscription = (await kv.get<webPush.PushSubscription>(key)).value
-    const payload = withPayload ? JSON.stringify({ title, body, requireInteraction }) : undefined
+    const payload = withPayload ? JSON.stringify({ title, body }) : undefined
     console.log({ user, requireInteraction, title, body, delay, payload, subscription })
     await new Promise(resolve => {
       setTimeout(async () => {
