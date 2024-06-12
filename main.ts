@@ -1,3 +1,4 @@
+// @deno-types="npm:@types/web-push"
 import webPush from 'npm:web-push'
 import { Application, Router } from "@oak/oak";
 import { oakCors } from "https://deno.land/x/cors@v1.2.2/mod.ts"
@@ -42,13 +43,13 @@ router
   })
   .post('/send/:user', async (ctx) => {
     const { user } = ctx.params
-    const { delay } = await ctx.request.body.json()
+    const { delay, requireInteraction, title, body } = await ctx.request.body.json()
     const key = ['users', user, 'subscription']
-    const subscription = (await kv.get(key)).value
+    const subscription = (await kv.get<webPush.PushSubscription>(key)).value
     console.log({ user, subscription })
     setTimeout(() => {
       console.log('sending')
-      webPush.sendNotification(subscription)
+      webPush.sendNotification(subscription!, { title, body, requireInteraction })
       // webPush.sendNotification(subscription, JSON.stringify({
       //   title: 'Hello from Deno!',
       //   body: 'This is a push notification from Deno!',
