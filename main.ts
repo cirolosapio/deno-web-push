@@ -60,6 +60,7 @@ router
         } else {
           console.log('Error', error)
         }
+        throw error
       }
     }, (delay ?? 0) * 1000)
     ctx.response.body = { user, title, body, delay }
