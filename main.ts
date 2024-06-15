@@ -19,7 +19,7 @@ router
       .commit()
     ctx.response.body = { user, device }
   })
-  .post('/subscription/:user', async (ctx) => {
+  .post('/subscribe/:user', async (ctx) => {
     const { user } = ctx.params
     const { subscription } = await ctx.request.body.json()
     console.log({ user, subscription })
