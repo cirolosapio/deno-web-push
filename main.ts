@@ -37,42 +37,40 @@ router
     const key = ['users', user, 'subscription']
     const subscription = (await kv.get<webPush.PushSubscription>(key)).value
     const payload = withPayload ? JSON.stringify({ title, body }) : undefined
+
     console.log({ user, requireInteraction, title, body, delay, payload })
-    await new Promise((resolve, reject) => {
-      setTimeout(async () => {
-        try {
-          console.log('sending')
 
-          console.log('endpoint', subscription?.endpoint)
-          console.log('keys', subscription?.keys)
+    setTimeout(async () => {
+      try {
+        console.log('sending')
 
-          const options: webPush.RequestOptions = {
-            urgency,
-            vapidDetails: {
-              subject: 'mailto:info@cirolosapio.it',
-              publicKey: Deno.env.get('VAPID_PUBLIC_KEY')!,
-              privateKey: Deno.env.get('VAPID_PRIVATE_KEY')!,
-            }
+        console.log('endpoint', subscription?.endpoint)
+        console.log('keys', subscription?.keys)
+
+        const options: webPush.RequestOptions = {
+          urgency,
+          vapidDetails: {
+            subject: 'mailto:info@cirolosapio.it',
+            publicKey: Deno.env.get('VAPID_PUBLIC_KEY')!,
+            privateKey: Deno.env.get('VAPID_PRIVATE_KEY')!,
           }
-          console.log('--- ~ setTimeout ~ options:', options)
-
-          const requestDetails = webPush.generateRequestDetails(subscription!, payload, options)
-          console.log('--- ~ setTimeout ~ requestDetails:', requestDetails)
-
-          const res = await webPush.sendNotification(subscription!, payload, options)
-          console.log('sent', res)
-          resolve(true)
-        } catch (error) {
-          if (error instanceof webPush.WebPushError) {
-            console.log('WebPushError', error.statusCode, error.body, error.message, error.cause)
-          } else {
-            console.log('Error', error)
-          }
-          ctx.response.body = { error }
-          reject(error)
         }
-      }, (delay ?? 0) * 1000)
-    })
+        console.log('--- ~ setTimeout ~ options:', options)
+
+        const requestDetails = webPush.generateRequestDetails(subscription!, payload, options)
+        console.log('--- ~ setTimeout ~ requestDetails:', requestDetails)
+
+        const res = await webPush.sendNotification(subscription!, payload, options)
+        console.log('sent', res)
+      } catch (error) {
+        if (error instanceof webPush.WebPushError) {
+          console.log('WebPushError', error.statusCode, error.body, error.message, error.cause)
+        } else {
+          console.log('Error', error)
+        }
+      }
+    }, (delay ?? 0) * 1000)
+
     ctx.response.body = { user, title, body, delay }
   })
   .get('/', ctx => {
